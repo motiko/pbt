@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "api": {
+      "pbt": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

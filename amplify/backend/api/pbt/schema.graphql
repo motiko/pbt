@@ -1,0 +1,24 @@
+type Player @model {
+  id: ID!
+  email: AWSEmail
+  rating: Int @aws_iam
+}
+
+type Puzzle @model {
+  id: ID!
+  initialFen: String
+  initialMove: String
+  puzzleFen: String!
+  lines: AWSJSON @aws_iam
+  color: String
+  rating: Int
+}
+
+type Battle @model {
+  id: ID!
+  puzzleId: ID!
+  puzzle: Puzzle @connection(fields: ["puzzleId"])
+  currentFen: String @aws_iam
+  moves: [String] @aws_iam
+  players: [String]
+}
