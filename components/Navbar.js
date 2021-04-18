@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function Header({ Component, pageProps }) {
+function Navbar() {
   return (
     <nav className="flex p-3 dark:bg-gray-800 dark:text-gray-400 ">
       <Link href="/">
@@ -19,11 +19,11 @@ function Header({ Component, pageProps }) {
       <Link href="/profile">
         <span className="mr-6 cursor-pointer hover:text-gray-50">Profile</span>
       </Link>
-      <Link href="/profile">
+      <Link href="/login">
         <span className="mr-6 cursor-pointer hover:text-gray-50">Login</span>
       </Link>
     </nav>
   );
 }
 
-export default Header;
+export default Navbar;
