@@ -30,6 +30,19 @@ function NewGame() {
                     htmlFor="difficulty"
                     className="block mb-2 text-xs font-bold text-gray-700 uppercase"
                   >
+                    Name
+                  </label>
+                  <div class="mb-3 pt-0">
+                    <input
+                      type="text"
+                      placeholder="Guest"
+                      class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+                    />
+                  </div>
+                  <label
+                    htmlFor="difficulty"
+                    className="block mb-2 text-xs font-bold text-gray-700 uppercase"
+                  >
                     Difficulty
                   </label>
                   <select
@@ -45,7 +58,8 @@ function NewGame() {
                   <button
                     className="w-full px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase bg-gray-900 rounded shadow outline-none active:bg-gray-700 hover:shadow-lg focus:outline-none"
                     type="button"
-                    style={{ transition: "all .15s ease" }} onClick={newGame}
+                    style={{ transition: "all .15s ease" }}
+                    onClick={newGame}
                   >
                     Start
                   </button>

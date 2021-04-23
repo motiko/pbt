@@ -1,5 +1,5 @@
-import Chessground from "react-chessground";
+import Game from "../../components/Game";
 
 export default () => {
-  return <Chessground />;
+  return <Game />;
 };

@@ -8,14 +8,14 @@ import Footer from "../components/Footer";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div className="dark ">
+    <div className="dark">
       <Navbar />
       <main className="dark:border-black dark:bg-gray-700 dark:text-gray-50 ">
-        <section className="absolute w-full h-full dark:bg-gray-900">
+        <section className="dark:bg-gray-900">
           <Component {...pageProps} />
         </section>
       </main>
-      <Footer absolute />
+      <Footer />
     </div>
   );
 }
