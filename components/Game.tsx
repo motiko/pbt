@@ -5,11 +5,11 @@ import PlayersList from "./PlayersList";
 
 function Game() {
   return (
-    <div className="flex h-full p-4">
+    <div className="flex p-4">
       <div className="w-64 p-8 text-sm font-bold text-gray-600 bg-gray-300 rounded-lg shadow-lg">
         <PlayersList players={["player1", "player2", "guest0"]} />
       </div>
-      <div className="relative h-full aspect-w-1 bg-gray-50">
+      <div className="w-64 h-64">
         <Chessground />
       </div>
       <div className="w-32 p-8">
