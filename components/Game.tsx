@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import Chessground from "react-chessground";
 import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
 
-function Game() {
+function Game({ fen }) {
+  const [lastMove, setLastMove] = useState("");
+  const onMove = () => {};
+  console.log(fen);
   return (
     <div className="flex items-center justify-center flex-grow space-x-8">
       <div className="h-80 w-80">
         <PlayersList players={["player1", "player2", "guest0"]} />
       </div>
       <div className="w-80 h-80 ">
-        <Chessground />
+        <Chessground lastMove={lastMove} fen={fen} onMove={onMove} />
       </div>
       <div className="hidden w-80 h-80">
         <MovesList

@@ -1,22 +1,20 @@
-import { API } from "aws-amplify";
 import { useRouter } from "next/router";
-import { createBattle } from "../../src/graphql/mutations";
-import { v4 as uuid } from "uuid";
 
 function NewGame() {
   const router = useRouter();
   async function newGame() {
-    console.log("new");
-    console.log(id);
-    const data = await API.graphql({
-      query: createBattle,
-      variables: {
-        input: { puzzleId: "533d5d38-80fe-4d7d-8e7a-2cb06af8277a" },
-      },
-    });
-    console.log(data);
-    const id = data.data.createBattle.id;
-    router.push(`/game/${id}`);
+    try {
+      const response = await fetch("/api/puzzle/random");
+      const puzzle = await response.json();
+      console.log(puzzle);
+      const id = 123;
+      router.push({
+        pathname: `/game/${id}`,
+        query: { fen: puzzle.fen, initialMove: puzzle.initialMove },
+      });
+    } catch (e) {
+      console.err("Server error: ", e);
+    }
   }
   return (
     <div className="container h-full px-4 mx-auto">
