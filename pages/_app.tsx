@@ -8,11 +8,11 @@ import "../styles/chessground.css";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <div className="flex flex-col min-h-screen dark">
+    <div className="flex flex-col min-h-screen overflow-hidden dark">
       <div className="flex-none">
         <Navbar />
       </div>
-      <div className="flex-grow">
+      <div className="flex justify-center flex-grow bg-gray-600 ">
         <Component {...pageProps} />
       </div>
       <div className="flex-none">

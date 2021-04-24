@@ -37,6 +37,7 @@
 .cg-wrap piece.king.black {
   background-image: url("/images/pieces/merida/bK.svg");
 }
+
 .cg-wrap {
   width: 100%;
   height: 100%;
@@ -71,6 +72,7 @@ cg-board {
   background-size: cover;
   cursor: pointer;
 }
+
 cg-board square {
   position: absolute;
   top: 0;
@@ -211,4 +213,8 @@ cg-board piece.fading {
 }
 .cg-wrap coords.ranks coord {
   transform: translateY(39%);
+}
+
+.cg-custom-svgs{
+  disaply: none;
 }

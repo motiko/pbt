@@ -3,7 +3,7 @@ function PlayerName({ name }) {
 }
 function PlayersList({ players }) {
   return (
-    <div className="">
+    <div className="p-8 text-sm font-bold text-gray-600 bg-gray-300 rounded-lg shadow-lg ">
       {players.map((p) => (
         <PlayerName name={p} />
       ))}
