@@ -7,10 +7,9 @@ function NewGame() {
   async function newGame() {
     try {
       const response = await fetch("/api/game/new");
-      const puzzle = await response.json();
+      const game = await response.json();
       router.push({
-        pathname: `/game/${puzzle.id}`,
-        query: { fen: puzzle.fen, initialMove: puzzle.initialMove },
+        pathname: `/game/${game.id}`,
       });
     } catch (e) {
       console.error("Server error: ", e);

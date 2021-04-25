@@ -9,9 +9,8 @@ export default (req, res) => {
   const puzzleNum = Math.floor(random(0, puzzles.length - 1));
   const puzzle = puzzles[puzzleNum];
   const id = random(1, 10000);
-  console.log(id);
   try {
-    createNewGameRecord(id, puzzle.id, "shnurok");
+    createNewGameRecord(id, puzzle, "shnurok");
   } catch (e) {
     console.error("Firebase err: ", e);
   }
@@ -23,9 +22,13 @@ export default (req, res) => {
   });
 };
 
-function createNewGameRecord(gameId, puzzleId, userName) {
+function createNewGameRecord(gameId, puzzle, userName) {
   rtdb.ref("games/" + gameId).set({
     players: [userName],
-    puzzleId,
+    currentPuzzle: {
+      id: puzzle.id,
+      fen: puzzle.fen,
+      initialMove: puzzle.initialMove.uci,
+    },
   });
 }
