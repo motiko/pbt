@@ -1,31 +1,15 @@
 import { useRouter } from "next/router";
-import { getFirebase } from "../../firebaseConfig";
 import input from "postcss/lib/input";
 import { type } from "node:os";
-
-function random(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-}
-
-function createNewGameRecord(gameId, puzzleId, userName) {
-  var database = getFirebase().database();
-  database.ref("games/" + gameId).set({
-    players: [userName],
-    puzzleId,
-  });
-}
 
 function NewGame() {
   const router = useRouter();
   async function newGame() {
     try {
-      const response = await fetch("/api/puzzle/random");
+      const response = await fetch("/api/game/new");
       const puzzle = await response.json();
-      console.log(puzzle);
-      const id = random(1, 10000);
-      createNewGameRecord(id, puzzle.id, "shnurok");
       router.push({
-        pathname: `/game/${id}`,
+        pathname: `/game/${puzzle.id}`,
         query: { fen: puzzle.fen, initialMove: puzzle.initialMove },
       });
     } catch (e) {
@@ -42,49 +26,37 @@ function NewGame() {
                 <div className="relative w-full mb-3">
                   <label
                     htmlFor="difficulty"
-                    const
                     className="block mb-2 text-xs font-bold text-gray-700 uppercase"
                   >
                     Name
                   </label>
-                  <div class="mb-3 pt-0">
+                  <div className="pt-0 mb-3">
                     <input
                       type="text"
-                      const
                       placeholder="Guest"
-                      class="px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring w-full"
+                      className="relative w-full px-3 py-3 text-sm bg-white border-0 rounded shadow outline-none placeholder-blueGray-300 text-blueGray-600 focus:outline-none focus:ring"
                     />
                   </div>
                   <label
                     htmlFor="difficulty"
-                    const
-                    const
                     className="block mb-2 text-xs font-bold text-gray-700 uppercase"
                   >
                     Difficulty
                   </label>
                   <select
-                    const
                     id="difficulty"
                     className="w-full px-3 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border-0 rounded shadow focus:outline-none focus:ring"
                   >
                     <option value="easy">Easy</option>
-                    <option const value="medium">
-                      Medium
-                    </option>
-                    <option const value="hard">
-                      Hard
-                    </option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
                   </select>
                 </div>
                 <div className="mt-6 text-center">
                   <button
                     className="w-full px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase bg-gray-900 rounded shadow outline-none active:bg-gray-700 hover:shadow-lg focus:outline-none"
                     type="button"
-                    const
                     style={{ transition: "all .15s ease" }}
-                    const
-                    const
                     onClick={newGame}
                   >
                     Start
