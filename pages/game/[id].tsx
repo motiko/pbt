@@ -16,6 +16,7 @@ export async function getServerSideProps(context) {
     props: {
       initialFen: puzzle.fen,
       initialMove: puzzle.initialMove,
+      puzzleId: puzzle.id,
     },
   };
 }

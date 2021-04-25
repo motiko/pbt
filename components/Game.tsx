@@ -6,19 +6,17 @@ import * as ChessJS from "chess.js";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-function Game({ initialFen, initialMove }) {
+function Game({ initialFen, initialMove, puzzleId }) {
   const chess: any = useRef(new Chess(initialFen));
   const [fen, setFen] = useState(initialFen);
-  // debugger
   const [lastMove, setLastMove] = useState(initialMove);
 
   useEffect(() => {
-    console.log(chess.current.fen());
-    console.log(initialMove);
     const moveRes = chess.current.move(initialMove, { sloppy: true });
-    console.log(moveRes);
+    setLastMove(initialMove);
     setFen(chess.current.fen());
   }, []);
+
   const getMovableDests = () => {
     const dests = new Map();
     chess.current.SQUARES.forEach((s) => {
@@ -31,7 +29,40 @@ function Game({ initialFen, initialMove }) {
     });
     return dests;
   };
-  const onMove = () => {};
+
+  const onMove = async (from, to) => {
+    console.log(from, to);
+    try {
+      const userMove = chess.current.move({ from, to });
+      console.log(chess.current.ascii());
+      const moves = chess.current.history({ verbose: true });
+      console.log(moves);
+      const sanMoves = moves
+        .filter((_, i) => i > 0)
+        .map((m) => `${m.from}${m.to}`)
+        .join(",");
+      const response = await fetch(
+        `/api/puzzle/validateMove?moves=${sanMoves}&puzzleId=${puzzleId}`
+      );
+      if (response.ok) {
+        const result = await response.json();
+        if (result.valid) {
+          const moveRes = chess.current.move(result.nextMove, { sloppy: true });
+          console.log(userMove, moveRes);
+          setFen(chess.current.fen());
+          setLastMove([moveRes.from, moveRes.to]);
+        } else {
+          const moveRes = chess.current.undo();
+          console.log(chess.current.ascii());
+          setFen(chess.current.fen());
+          setLastMove([moveRes.from, moveRes.to]);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const sideToMove = () => {
     return chess.current.turn() === "w" ? "white" : "black";
   };
@@ -46,15 +77,17 @@ function Game({ initialFen, initialMove }) {
         width="35vw"
         height="35vw"
         movable={{
-          free: true,
+          free: false,
           dests: getMovableDests(),
           color: sideToMove(),
           showDests: true,
         }}
+        turnColor={sideToMove()}
         animation={{
           enabled: true,
           duration: 500,
         }}
+        onMove={onMove}
       />
       <div className="hidden w-80 h-80">
         <MovesList

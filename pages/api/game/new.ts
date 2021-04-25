@@ -6,7 +6,7 @@ function random(min, max) {
 }
 
 export default (req, res) => {
-  const puzzleNum = Math.floor(random(0, puzzles.length - 1));
+  const puzzleNum =  random(0, puzzles.length - 1);
   const puzzle = puzzles[puzzleNum];
   const id = random(1, 10000);
   try {
