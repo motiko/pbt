@@ -8,6 +8,10 @@ export default (req, res) => {
   const puzzleNum = Math.floor(random(0, puzzles.length - 1));
   const puzzle = puzzles[puzzleNum];
   res.statusCode = 200;
-  res.json({ fen: puzzle.fen, initialMove: puzzle.initialMove.uci });
+  res.json({
+    fen: puzzle.fen,
+    initialMove: puzzle.initialMove.uci,
+    id: puzzleNum,
+  });
   // return res;
 };

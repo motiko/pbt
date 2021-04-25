@@ -1,5 +1,34 @@
 import { useRouter } from "next/router";
 
+import firebase from "firebase";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC_BEjloxmuFrJuJMuDY2wiSNC2SJn_qho",
+  authDomain: "pzl-btl.firebaseapp.com",
+  databaseURL: "https://pzl-btl-default-rtdb.firebaseio.com",
+  projectId: "pzl-btl",
+  storageBucket: "pzl-btl.appspot.com",
+  messagingSenderId: "592026568954",
+  appId: "1:592026568954:web:87a8e81b5713fdcabce143",
+};
+
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+function createNewGameRecord(gameId, puzzleId, userName) {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app(); // if already initialized, use that one
+  }
+  var database = firebase.database();
+  database.ref("games/" + gameId).set({
+    players: [userName],
+    puzzleId,
+  });
+}
+
 function NewGame() {
   const router = useRouter();
   async function newGame() {
@@ -7,13 +36,14 @@ function NewGame() {
       const response = await fetch("/api/puzzle/random");
       const puzzle = await response.json();
       console.log(puzzle);
-      const id = 123;
+      const id = random(1, 10000);
+      createNewGameRecord(id, puzzle.id, "shnurok");
       router.push({
         pathname: `/game/${id}`,
         query: { fen: puzzle.fen, initialMove: puzzle.initialMove },
       });
     } catch (e) {
-      console.err("Server error: ", e);
+      console.error("Server error: ", e);
     }
   }
   return (
