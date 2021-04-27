@@ -1,5 +1,5 @@
 import puzzles from "data/repetition/level-10.json";
-import rtdb from "db";
+import rtdb from "@/utils/firbase-admin";
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);

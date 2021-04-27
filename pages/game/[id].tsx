@@ -1,5 +1,5 @@
-import Game from "components/Game";
-import rtdb from "../../db";
+import Game from "@/components/Game";
+import rtdb from "@/utils/firbase-admin";
 
 const GamePage = (props) => {
   return <Game {...props} />;

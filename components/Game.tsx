@@ -3,7 +3,7 @@ import Chessground from "react-chessground";
 import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
 import * as ChessJS from "chess.js";
-import { getFirebase } from "../firebaseConfig";
+import { getFirebase } from "@/utils/firebaseConfig";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 

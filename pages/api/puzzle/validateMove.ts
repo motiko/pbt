@@ -1,7 +1,7 @@
 import puzzles from "data/repetition/level-10.json";
 import * as ChessJS from "chess.js";
+import rtdb from "@/utils/firbase-admin";
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
-import rtdb from "db";
 
 export default (req, res) => {
   const { puzzleId, gameId } = req.query;
@@ -9,9 +9,9 @@ export default (req, res) => {
   const puzzle = puzzles.find((p) => p.id == puzzleId);
   const { lines } = puzzle;
   const moves = movesStr.split(",");
-  console.log(moves);
+  console.log("Submitted Moves:", moves);
   const result = evaluateLine(lines, moves);
-  console.log("RES: ", result);
+  console.log("Result: ", result);
   res.statusCode = 200;
   if (result == "win") {
     res.json({ valid: true, win: true });
