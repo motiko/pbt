@@ -1,12 +1,12 @@
-import puzzles from "../../../data/repetition/level-1.json";
-import rtdb from "../../../db";
+import puzzles from "data/repetition/level-10.json";
+import rtdb from "db";
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
 export default (req, res) => {
-  const puzzleNum =  random(0, puzzles.length - 1);
+  const puzzleNum = random(0, puzzles.length - 1);
   const puzzle = puzzles[puzzleNum];
   const id = random(1, 10000);
   try {
@@ -25,9 +25,11 @@ export default (req, res) => {
 function createNewGameRecord(gameId, puzzle, userName) {
   rtdb.ref("games/" + gameId).set({
     players: [userName],
+    fen: puzzle.fen,
+    moves: [puzzle.initialMove.uci],
     currentPuzzle: {
       id: puzzle.id,
-      fen: puzzle.fen,
+      initialFen: puzzle.fen,
       initialMove: puzzle.initialMove.uci,
     },
   });

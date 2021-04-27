@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import input from "postcss/lib/input";
-import { type } from "node:os";
 
 function NewGame() {
   const router = useRouter();

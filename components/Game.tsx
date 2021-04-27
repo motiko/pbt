@@ -3,21 +3,50 @@ import Chessground from "react-chessground";
 import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
 import * as ChessJS from "chess.js";
+import { getFirebase } from "../firebaseConfig";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-function Game({ initialFen, initialMove, puzzleId }) {
-  const chess: any = useRef(new Chess(initialFen));
-  const [fen, setFen] = useState(initialFen);
-  const [lastMove, setLastMove] = useState(initialMove);
+function Game({ id, initialMove, initialFen }) {
+  const chess: any = useRef(new Chess());
+  const [fen, setFen] = useState("");
+  const [lastMove, setLastMove] = useState([]);
+  const [movesHistory, setMovesHistory] = useState([]);
+  const [puzzleId, setPuzzleId] = useState("");
+
+  function move(uciMove) {
+    console.log("move:", uciMove);
+    const moveObj = chess.current.move(uciMove, { sloppy: true });
+    setFen(chess.current.fen());
+    setLastMove([moveObj.from, moveObj.to]);
+  }
 
   useEffect(() => {
-    const moveRes = chess.current.move(initialMove, { sloppy: true });
-    setLastMove(initialMove);
+    chess.current.load(initialFen);
     setFen(chess.current.fen());
+    move(initialMove);
+    // setMovesHistory([initialMove]);
+    const db = getFirebase().database();
+    const gameRef = db.ref(`games/${id}`);
+    gameRef.on("value", (snapshot) => {
+      const game = snapshot.val();
+      setPuzzleId(game.currentPuzzle.id);
+      console.log(game);
+      console.log(JSON.stringify(movesHistory), JSON.stringify(game.moves));
+      console.log(JSON.stringify(movesHistory) === JSON.stringify(game.moves));
+      if (
+        JSON.stringify(movesHistory) === JSON.stringify(game.moves) ||
+        game.moves.length === 1
+      )
+        return;
+      chess.current.load(game.fen);
+      setMovesHistory(game.moves);
+      setFen(game.fen);
+    });
   }, []);
 
   const getMovableDests = () => {
+    if (!chess.current) return null;
     const dests = new Map();
     chess.current.SQUARES.forEach((s) => {
       const ms = chess.current.moves({ square: s, verbose: true });
@@ -34,28 +63,23 @@ function Game({ initialFen, initialMove, puzzleId }) {
     console.log(from, to);
     try {
       const userMove = chess.current.move({ from, to });
-      console.log(chess.current.ascii());
-      const moves = chess.current.history({ verbose: true });
-      console.log(moves);
-      const sanMoves = moves
-        .filter((_, i) => i > 0)
-        .map((m) => `${m.from}${m.to}`)
-        .join(",");
       const response = await fetch(
-        `/api/puzzle/validateMove?moves=${sanMoves}&puzzleId=${puzzleId}`
+        `/api/puzzle/validateMove?moves=${[
+          ...movesHistory,
+          `${from}${to}`,
+        ]}&puzzleId=${puzzleId}&gameId=${id}`
       );
       if (response.ok) {
         const result = await response.json();
         if (result.valid) {
-          const moveRes = chess.current.move(result.nextMove, { sloppy: true });
-          console.log(userMove, moveRes);
-          setFen(chess.current.fen());
-          setLastMove([moveRes.from, moveRes.to]);
+          console.log(result);
         } else {
           const moveRes = chess.current.undo();
           console.log(chess.current.ascii());
+          console.log(moveRes);
           setFen(chess.current.fen());
-          setLastMove([moveRes.from, moveRes.to]);
+          setLastMove([from, to]);
+          setMovesHistory(movesHistory);
         }
       }
     } catch (e) {
@@ -83,9 +107,10 @@ function Game({ initialFen, initialMove, puzzleId }) {
           showDests: true,
         }}
         turnColor={sideToMove()}
+        lastMove={lastMove}
         animation={{
           enabled: true,
-          duration: 500,
+          duration: 200,
         }}
         onMove={onMove}
       />

@@ -1,4 +1,4 @@
-import puzzles from "../../../data/repetition/level-1.json";
+import puzzles from "data/repetition/level-1.json";
 
 function random(min, max) {
   return Math.random() * (max - min) + min;

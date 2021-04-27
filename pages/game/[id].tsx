@@ -1,4 +1,4 @@
-import Game from "../../components/Game";
+import Game from "components/Game";
 import rtdb from "../../db";
 
 const GamePage = (props) => {
@@ -12,11 +12,12 @@ export async function getServerSideProps(context) {
   const snapshot = await rtdb.ref(`games/${query.id}`).get();
   const game = await snapshot.val();
   const puzzle = game.currentPuzzle;
+  console.log(puzzle)
   return {
     props: {
-      initialFen: puzzle.fen,
+      id: query.id,
+      initialFen: puzzle.initialFen,
       initialMove: puzzle.initialMove,
-      puzzleId: puzzle.id,
     },
   };
 }
