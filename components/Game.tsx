@@ -25,23 +25,21 @@ function Game({ id, initialMove, initialFen }) {
     chess.current.load(initialFen);
     setFen(chess.current.fen());
     move(initialMove);
-    // setMovesHistory([initialMove]);
     const db = getFirebase().database();
     const gameRef = db.ref(`games/${id}`);
     gameRef.on("value", (snapshot) => {
       const game = snapshot.val();
       setPuzzleId(game.currentPuzzle.id);
-      console.log(game);
-      console.log(JSON.stringify(movesHistory), JSON.stringify(game.moves));
-      console.log(JSON.stringify(movesHistory) === JSON.stringify(game.moves));
       if (
-        JSON.stringify(movesHistory) === JSON.stringify(game.moves) ||
-        game.moves.length === 1
-      )
-        return;
-      chess.current.load(game.fen);
-      setMovesHistory(game.moves);
-      setFen(game.fen);
+        JSON.stringify(movesHistory) !== JSON.stringify(game.moves) &&
+        game.moves.length > 1
+      ) {
+        setTimeout(() => {
+          chess.current.load(game.fen);
+          setMovesHistory(game.moves);
+          setFen(game.fen);
+        }, 200);
+      }
     });
   }, []);
 
@@ -110,7 +108,7 @@ function Game({ id, initialMove, initialFen }) {
         lastMove={lastMove}
         animation={{
           enabled: true,
-          duration: 200,
+          duration: 100,
         }}
         onMove={onMove}
       />
