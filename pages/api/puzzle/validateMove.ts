@@ -29,9 +29,10 @@ export default (req, res) => {
         currentPuzzle,
       });
     res.json({ valid: true, win: true, currentPuzzle });
-  } else if (result == "invalid") {
+  } else if (result == "invalid" || result == "retry") {
     res.json({ valid: false });
-  } else { // valid
+  } else {
+    // valid
     const newFen = playMoves(puzzle.fen, [
       puzzle.initialMove.uci,
       ...moves,
