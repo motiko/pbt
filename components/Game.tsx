@@ -7,7 +7,7 @@ import { getFirebase } from "@/utils/firebaseConfig";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
-function Game({ id, initialMove, initialFen }) {
+function Game({ id }) {
   const chess: any = useRef(new Chess());
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState([]);
@@ -22,22 +22,15 @@ function Game({ id, initialMove, initialFen }) {
   }
 
   useEffect(() => {
-    chess.current.load(initialFen);
-    setFen(chess.current.fen());
-    move(initialMove);
     const db = getFirebase().database();
     const gameRef = db.ref(`games/${id}`);
     gameRef.on("value", (snapshot) => {
       const game = snapshot.val();
+      chess.current.load(game.fen);
+      setFen(chess.current.fen());
+      console.log("game.moves: ", game.moves);
+      setMovesHistory(game.moves || []);
       setPuzzleId(game.currentPuzzle.id);
-      if (
-        JSON.stringify(movesHistory) !== JSON.stringify(game.moves) &&
-        game.moves.length > 1
-      ) {
-        chess.current.load(game.fen);
-        setMovesHistory(game.moves);
-        setFen(game.fen);
-      }
     });
   }, []);
 
@@ -57,6 +50,8 @@ function Game({ id, initialMove, initialFen }) {
 
   const onMove = async (from, to) => {
     console.log(from, to);
+    console.log("movesHistory:", movesHistory);
+
     try {
       const userMove = chess.current.move({ from, to });
       const response = await fetch(

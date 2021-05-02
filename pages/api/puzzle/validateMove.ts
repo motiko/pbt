@@ -1,7 +1,6 @@
-import * as ChessJS from "chess.js";
 import rtdb from "@/utils/firbase-admin";
 import { byId, randomPuzzle } from "@/utils/getPuzzle";
-const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
+import { Chess, playMoves } from "@/utils/chess";
 
 export default (req, res) => {
   const { puzzleId, gameId } = req.query;
@@ -16,31 +15,32 @@ export default (req, res) => {
   res.statusCode = 200;
   if (result == "win") {
     const newPuzzle = randomPuzzle();
-    console.log(newPuzzle);
     const currentPuzzle = {
       id: newPuzzle.id,
       initialFen: newPuzzle.fen,
       initialMove: newPuzzle.initialMove.uci,
     };
+    const newFen = playMoves(newPuzzle.fen, [newPuzzle.initialMove.uci]);
     rtdb()
       .ref("games/" + gameId)
       .update({
-        fen: newPuzzle.fen,
-        moves: [newPuzzle.initialMove.uci],
+        fen: newFen,
+        moves: [],
         currentPuzzle,
       });
     res.json({ valid: true, win: true, currentPuzzle });
   } else if (result == "invalid") {
     res.json({ valid: false });
-  } else {
-    const chess = new Chess(puzzle.fen);
-    chess.move(puzzle.initialMove.uci, { sloppy: true });
-    moves.forEach((move) => chess.move(move, { sloppy: true }));
-    chess.move(result, { sloppy: true });
+  } else { // valid
+    const newFen = playMoves(puzzle.fen, [
+      puzzle.initialMove.uci,
+      ...moves,
+      result,
+    ]);
     rtdb()
       .ref("games/" + gameId)
       .update({
-        fen: chess.fen(),
+        fen: newFen,
         moves: [...moves, result],
       });
     res.json({ valid: true });

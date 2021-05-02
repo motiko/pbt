@@ -1,22 +1,24 @@
+import { playMoves } from "@/utils/chess";
 import rtdb from "@/utils/firbase-admin";
-import {randomPuzzle} from "@/utils/getPuzzle";
+import { randomPuzzle } from "@/utils/getPuzzle";
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
 export default (req, res) => {
-  const puzzle = randomPuzzle()
+  const puzzle = randomPuzzle();
   const id = random(1, 10000);
   const userName = "shnurok";
+  const newFen = playMoves(puzzle.fen, [puzzle.initialMove.uci]);
   return new Promise<void>((resolve, reject) => {
     rtdb()
       .ref("games/" + id)
       .set(
         {
           players: [userName],
-          fen: puzzle.fen,
-          moves: [puzzle.initialMove.uci],
+          fen: newFen,
+          moves: [],
           currentPuzzle: {
             id: puzzle.id,
             initialFen: puzzle.fen,
