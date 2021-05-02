@@ -9,10 +9,10 @@ export default GamePage;
 
 export async function getServerSideProps(context) {
   const { query } = context;
-  const snapshot = await rtdb.ref(`games/${query.id}`).get();
+  const snapshot = await rtdb().ref(`games/${query.id}`).get();
   const game = await snapshot.val();
   const puzzle = game.currentPuzzle;
-  console.log(puzzle)
+  console.log(puzzle);
   return {
     props: {
       id: query.id,

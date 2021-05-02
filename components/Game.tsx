@@ -34,11 +34,9 @@ function Game({ id, initialMove, initialFen }) {
         JSON.stringify(movesHistory) !== JSON.stringify(game.moves) &&
         game.moves.length > 1
       ) {
-        setTimeout(() => {
-          chess.current.load(game.fen);
-          setMovesHistory(game.moves);
-          setFen(game.fen);
-        }, 200);
+        chess.current.load(game.fen);
+        setMovesHistory(game.moves);
+        setFen(game.fen);
       }
     });
   }, []);
@@ -73,8 +71,6 @@ function Game({ id, initialMove, initialFen }) {
           console.log(result);
         } else {
           const moveRes = chess.current.undo();
-          console.log(chess.current.ascii());
-          console.log(moveRes);
           setFen(chess.current.fen());
           setLastMove([from, to]);
           setMovesHistory(movesHistory);

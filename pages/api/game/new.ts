@@ -9,28 +9,40 @@ export default (req, res) => {
   const puzzleNum = random(0, puzzles.length - 1);
   const puzzle = puzzles[puzzleNum];
   const id = random(1, 10000);
-  try {
-    createNewGameRecord(id, puzzle, "shnurok");
-  } catch (e) {
-    console.error("Firebase err: ", e);
-  }
-  res.statusCode = 200;
-  res.json({
-    fen: puzzle.fen,
-    initialMove: puzzle.initialMove.uci,
-    id,
+  const userName = "shnurok";
+  return new Promise<void>((resolve, reject) => {
+    rtdb()
+      .ref("games/" + id)
+      .set(
+        {
+          players: [userName],
+          fen: puzzle.fen,
+          moves: [puzzle.initialMove.uci],
+          currentPuzzle: {
+            id: puzzle.id,
+            initialFen: puzzle.fen,
+            initialMove: puzzle.initialMove.uci,
+          },
+        },
+        function (error) {
+          if (error) {
+            res.statusCode = 500;
+            res.json({
+              error: error,
+            });
+            resolve();
+          } else {
+            res.statusCode = 200;
+            res.json({
+              fen: puzzle.fen,
+              initialMove: puzzle.initialMove.uci,
+              id,
+            });
+            resolve();
+          }
+        }
+      );
   });
 };
 
-function createNewGameRecord(gameId, puzzle, userName) {
-  rtdb.ref("games/" + gameId).set({
-    players: [userName],
-    fen: puzzle.fen,
-    moves: [puzzle.initialMove.uci],
-    currentPuzzle: {
-      id: puzzle.id,
-      initialFen: puzzle.fen,
-      initialMove: puzzle.initialMove.uci,
-    },
-  });
-}
+function createNewGameRecord(gameId, puzzle, userName) {}

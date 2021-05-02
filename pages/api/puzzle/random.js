@@ -1,11 +1,11 @@
-import puzzles from "data/repetition/level-1.json";
+import puzzles from "@/data/repetition/level-10.json";
 
 function random(min, max) {
   return Math.random() * (max - min) + min;
 }
 
 export default (req, res) => {
-  const puzzleNum = 3; //Math.floor(random(0, puzzles.length - 1));
+  const puzzleNum = Math.floor(random(0, puzzles.length - 1));
   const puzzle = puzzles[puzzleNum];
   res.statusCode = 200;
   res.json({

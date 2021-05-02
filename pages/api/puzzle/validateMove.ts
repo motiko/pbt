@@ -22,10 +22,12 @@ export default (req, res) => {
     chess.move(puzzle.initialMove.uci, { sloppy: true });
     moves.forEach((move) => chess.move(move, { sloppy: true }));
     chess.move(result, { sloppy: true });
-    rtdb.ref("games/" + gameId).update({
-      fen: chess.fen(),
-      moves: [...moves, result],
-    });
+    rtdb()
+      .ref("games/" + gameId)
+      .update({
+        fen: chess.fen(),
+        moves: [...moves, result],
+      });
     res.json({ valid: true });
   }
 };
