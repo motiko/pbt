@@ -1,13 +1,12 @@
-import puzzles from "data/repetition/level-10.json";
 import rtdb from "@/utils/firbase-admin";
+import {randomPuzzle} from "@/utils/getPuzzle";
 
 function random(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
 export default (req, res) => {
-  const puzzleNum = random(0, puzzles.length - 1);
-  const puzzle = puzzles[puzzleNum];
+  const puzzle = randomPuzzle()
   const id = random(1, 10000);
   const userName = "shnurok";
   return new Promise<void>((resolve, reject) => {
@@ -44,5 +43,3 @@ export default (req, res) => {
       );
   });
 };
-
-function createNewGameRecord(gameId, puzzle, userName) {}

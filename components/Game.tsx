@@ -69,6 +69,14 @@ function Game({ id, initialMove, initialFen }) {
         const result = await response.json();
         if (result.valid) {
           console.log(result);
+          if (result.win) {
+            const { currentPuzzle } = result;
+            setPuzzleId(currentPuzzle.id);
+            chess.current.load(currentPuzzle.initialFen);
+            setMovesHistory([]);
+            setFen(currentPuzzle.initialFen);
+            move(currentPuzzle.initialMove);
+          }
         } else {
           const moveRes = chess.current.undo();
           setFen(chess.current.fen());

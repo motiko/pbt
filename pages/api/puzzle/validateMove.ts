@@ -1,20 +1,35 @@
-import puzzles from "data/repetition/level-10.json";
 import * as ChessJS from "chess.js";
 import rtdb from "@/utils/firbase-admin";
+import { byId, randomPuzzle } from "@/utils/getPuzzle";
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 export default (req, res) => {
   const { puzzleId, gameId } = req.query;
   const movesStr = req.query.moves;
-  const puzzle = puzzles.find((p) => p.id == puzzleId);
+  const puzzle = byId(puzzleId);
   const { lines } = puzzle;
   const moves = movesStr.split(",");
   console.log("Submitted Moves:", moves);
+  console.log("Puzzle:", puzzle);
   const result = evaluateLine(lines, moves);
   console.log("Result: ", result);
   res.statusCode = 200;
   if (result == "win") {
-    res.json({ valid: true, win: true });
+    const newPuzzle = randomPuzzle();
+    console.log(newPuzzle);
+    const currentPuzzle = {
+      id: newPuzzle.id,
+      initialFen: newPuzzle.fen,
+      initialMove: newPuzzle.initialMove.uci,
+    };
+    rtdb()
+      .ref("games/" + gameId)
+      .update({
+        fen: newPuzzle.fen,
+        moves: [newPuzzle.initialMove.uci],
+        currentPuzzle,
+      });
+    res.json({ valid: true, win: true, currentPuzzle });
   } else if (result == "invalid") {
     res.json({ valid: false });
   } else {
