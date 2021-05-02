@@ -4,56 +4,33 @@ import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
 import * as ChessJS from "chess.js";
 import { getFirebase } from "@/utils/firebaseConfig";
+import { ascii, movableDests, playMoves, sideToMove } from "@/utils/chess";
 
 const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
 
 function Game({ id }) {
-  const chess: any = useRef(new Chess());
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState([]);
   const [movesHistory, setMovesHistory] = useState([]);
   const [puzzleId, setPuzzleId] = useState("");
-
-  function move(uciMove) {
-    console.log("move:", uciMove);
-    const moveObj = chess.current.move(uciMove, { sloppy: true });
-    setFen(chess.current.fen());
-    setLastMove([moveObj.from, moveObj.to]);
-  }
 
   useEffect(() => {
     const db = getFirebase().database();
     const gameRef = db.ref(`games/${id}`);
     gameRef.on("value", (snapshot) => {
       const game = snapshot.val();
-      chess.current.load(game.fen);
-      setFen(chess.current.fen());
+      setFen(game.fen);
       console.log("game.moves: ", game.moves);
       setMovesHistory(game.moves || []);
       setPuzzleId(game.currentPuzzle.id);
     });
   }, []);
 
-  const getMovableDests = () => {
-    if (!chess.current) return null;
-    const dests = new Map();
-    chess.current.SQUARES.forEach((s) => {
-      const ms = chess.current.moves({ square: s, verbose: true });
-      if (ms.length)
-        dests.set(
-          s,
-          ms.map((m) => m.to)
-        );
-    });
-    return dests;
-  };
-
   const onMove = async (from, to) => {
     console.log(from, to);
     console.log("movesHistory:", movesHistory);
 
     try {
-      const userMove = chess.current.move({ from, to });
       const response = await fetch(
         `/api/puzzle/validateMove?moves=${[
           ...movesHistory,
@@ -67,14 +44,12 @@ function Game({ id }) {
           if (result.win) {
             const { currentPuzzle } = result;
             setPuzzleId(currentPuzzle.id);
-            chess.current.load(currentPuzzle.initialFen);
             setMovesHistory([]);
             setFen(currentPuzzle.initialFen);
-            move(currentPuzzle.initialMove);
           }
         } else {
-          const moveRes = chess.current.undo();
-          setFen(chess.current.fen());
+          console.log(ascii(fen));
+          setFen(fen);
           setLastMove([from, to]);
           setMovesHistory(movesHistory);
         }
@@ -82,10 +57,6 @@ function Game({ id }) {
     } catch (e) {
       console.error(e);
     }
-  };
-
-  const sideToMove = () => {
-    return chess.current.turn() === "w" ? "white" : "black";
   };
 
   return (
@@ -99,11 +70,11 @@ function Game({ id }) {
         height="35vw"
         movable={{
           free: false,
-          dests: getMovableDests(),
-          color: sideToMove(),
+          dests: movableDests(fen),
+          color: sideToMove(fen),
           showDests: true,
         }}
-        turnColor={sideToMove()}
+        turnColor={sideToMove(fen)}
         lastMove={lastMove}
         animation={{
           enabled: true,
