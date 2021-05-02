@@ -10,6 +10,6 @@ export default (req, res) => {
   res.json({
     fen: puzzle.fen,
     initialMove: puzzle.initialMove.uci,
-    id: puzzleNum,
+    id: puzzle.id,
   });
 };
