@@ -39,15 +39,7 @@ function Game({ id }) {
       );
       if (response.ok) {
         const result = await response.json();
-        if (result.valid) {
-          console.log(result);
-          if (result.win) {
-            const { currentPuzzle } = result;
-            setPuzzleId(currentPuzzle.id);
-            setMovesHistory([]);
-            setFen(currentPuzzle.initialFen);
-          }
-        } else {
+        if (!result.valid) {
           console.log(ascii(fen));
           setFen(fen);
           setLastMove([from, to]);
@@ -60,33 +52,32 @@ function Game({ id }) {
   };
 
   return (
-    <div className="flex items-center justify-center flex-grow space-x-8">
-      <div style={{ width: "35vw", height: "35vw" }}>
+    <div className="pt-8 grid grid-cols-12 gap-4">
+      <div className="col-span-3">
         <PlayersList players={["player1", "player2", "guest0"]} />
       </div>
-      <Chessground
-        fen={fen}
-        width="35vw"
-        height="35vw"
-        movable={{
-          free: false,
-          dests: movableDests(fen),
-          color: sideToMove(fen),
-          showDests: true,
-        }}
-        turnColor={sideToMove(fen)}
-        lastMove={lastMove}
-        animation={{
-          enabled: true,
-          duration: 100,
-        }}
-        onMove={onMove}
-      />
-      <div className="hidden w-80 h-80">
-        <MovesList
-          moves={"e2e4 c7c5 g1f3 e7e6 d2d4 c5d4"}
-          firstColor={"white"}
+      <div className="col-span-5">
+        <Chessground
+          fen={fen}
+          width="35vw"
+          height="35vw"
+          movable={{
+            free: false,
+            dests: movableDests(fen),
+            color: sideToMove(fen),
+            showDests: true,
+          }}
+          turnColor={sideToMove(fen)}
+          lastMove={lastMove}
+          animation={{
+            enabled: true,
+            duration: 100,
+          }}
+          onMove={onMove}
         />
+      </div>
+      <div className="col-span-3">
+        <MovesList moves={movesHistory} firstColor={"white"} />
       </div>
     </div>
   );
