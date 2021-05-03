@@ -9,14 +9,15 @@ function random(min, max) {
 export default (req, res) => {
   const puzzle = randomPuzzle();
   const id = random(1, 10000);
-  const userName = "shnurok";
+  const { name = "" } = JSON.parse(req.body);
+  console.log(name);
   const newFen = playMoves(puzzle.fen, [puzzle.initialMove.uci]);
   return new Promise<void>((resolve, reject) => {
     rtdb()
       .ref("games/" + id)
       .set(
         {
-          players: [userName],
+          players: [name?.substr(0, 32)],
           fen: newFen,
           moves: [],
           currentPuzzle: {

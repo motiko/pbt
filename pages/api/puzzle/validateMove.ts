@@ -56,7 +56,7 @@ function evaluateLine(line, moves) {
     return Object.keys(line)[0];
   }
 
-  if (Object.keys(line).includes(moves[0])) {
+  if (Object.keys(line).includes(moves[0]) && line[moves[0]] !== "retry") {
     if (Object.values(line)[0] === "win") {
       return "win";
     }

@@ -1,14 +1,15 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-function NewGameDialog() {
+function JoinGameDialog({ id }) {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   async function newGame() {
     try {
-      const response = await fetch("/api/game/new", {
+      console.log(id);
+      const response = await fetch(`/api/game/join`, {
         method: "POST",
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, id }),
       });
       const game = await response.json();
       router.push({
@@ -43,20 +44,6 @@ function NewGameDialog() {
                       className="relative w-full px-3 py-3 text-sm bg-white border-0 rounded shadow outline-none placeholder-blueGray-300 text-blueGray-600 focus:outline-none focus:ring"
                     />
                   </div>
-                  <label
-                    htmlFor="difficulty"
-                    className="block mb-2 text-xs font-bold text-gray-700 uppercase"
-                  >
-                    Difficulty
-                  </label>
-                  <select
-                    id="difficulty"
-                    className="w-full px-3 py-3 text-sm text-gray-700 placeholder-gray-400 bg-white border-0 rounded shadow focus:outline-none focus:ring"
-                  >
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                  </select>
                 </div>
                 <div className="mt-6 text-center">
                   <button
@@ -77,4 +64,4 @@ function NewGameDialog() {
   );
 }
 
-export default NewGameDialog;
+export default JoinGameDialog;

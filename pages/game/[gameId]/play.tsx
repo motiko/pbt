@@ -9,15 +9,13 @@ export default GamePage;
 
 export async function getServerSideProps(context) {
   const { query } = context;
-  const snapshot = await rtdb().ref(`games/${query.id}`).get();
+  const snapshot = await rtdb().ref(`games/${query.gameId}`).get();
   const game = await snapshot.val();
   const puzzle = game.currentPuzzle;
   console.log(puzzle);
   return {
     props: {
-      id: query.id,
-      initialFen: puzzle.initialFen,
-      initialMove: puzzle.initialMove,
+      id: query.gameId,
     },
   };
 }
