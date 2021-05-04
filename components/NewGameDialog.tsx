@@ -3,8 +3,9 @@ import { useState } from "react";
 
 function NewGameDialog() {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   async function newGame() {
+    sessionStorage.setItem("name", name);
     try {
       const response = await fetch("/api/game/new", {
         method: "POST",

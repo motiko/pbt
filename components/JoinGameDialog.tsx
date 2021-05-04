@@ -7,6 +7,7 @@ function JoinGameDialog({ id }) {
   async function newGame() {
     try {
       console.log(id);
+      sessionStorage.setItem("name", name);
       const response = await fetch(`/api/game/join`, {
         method: "POST",
         body: JSON.stringify({ name, id }),

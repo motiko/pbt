@@ -3,17 +3,17 @@ import { byId, randomPuzzle } from "@/utils/getPuzzle";
 import { Chess, playMoves } from "@/utils/chess";
 
 export default (req, res) => {
-  const { puzzleId, gameId } = req.query;
+  const { puzzleId, gameId, playerName } = req.query;
   const movesStr = req.query.moves;
   const puzzle = byId(puzzleId);
   const { lines } = puzzle;
   const moves = movesStr.split(",");
   console.log("Submitted Moves:", moves);
   console.log("Puzzle:", puzzle);
-  const result = evaluateLine(lines, moves);
-  console.log("Result: ", result);
+  const replyMove = evaluateLine(lines, moves);
+  console.log("Result: ", replyMove);
   res.statusCode = 200;
-  if (result == "win") {
+  if (replyMove == "win") {
     const newPuzzle = randomPuzzle();
     const currentPuzzle = {
       id: newPuzzle.id,
@@ -23,28 +23,52 @@ export default (req, res) => {
     const newFen = playMoves(newPuzzle.fen, [newPuzzle.initialMove.uci]);
     rtdb()
       .ref("games/" + gameId)
-      .update({
-        fen: newFen,
-        moves: [],
-        currentPuzzle,
+      .transaction((game) => {
+        if (game === null) {
+          console.log("game is null");
+          return null;
+        }
+        console.log("???");
+        console.log("game is not null", game);
+        const scores = game.scores;
+        return {
+          ...game,
+          fen: newFen,
+          moves: [],
+          currentPuzzle,
+          scores: { ...scores, [playerName]: scores[playerName] + 2 },
+        };
       });
     res.json({ valid: true, win: true, currentPuzzle });
-  } else if (result == "invalid" || result == "retry") {
+  } else if (replyMove == "invalid" || replyMove == "retry") {
     res.json({ valid: false });
   } else {
     // valid
     const newFen = playMoves(puzzle.fen, [
       puzzle.initialMove.uci,
       ...moves,
-      result,
+      replyMove,
     ]);
-    rtdb()
-      .ref("games/" + gameId)
-      .update({
+    const gameRef = rtdb().ref("games/" + gameId);
+    gameRef.once("value", function (snapshot) {
+      if (!snapshot.exists()) {
+        res.statusCode = 200;
+        res.json({
+          error: "game not found",
+        });
+      }
+      var data = snapshot.val();
+      console.log(data);
+      gameRef.update({
         fen: newFen,
-        moves: [...moves, result],
+        moves: [...moves, replyMove],
+        scores: {
+          ...data.scores,
+          [playerName]: data.scores[playerName] + 1,
+        },
       });
-    res.json({ valid: true });
+      res.json({ valid: true });
+    });
   }
 };
 

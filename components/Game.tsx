@@ -6,13 +6,12 @@ import * as ChessJS from "chess.js";
 import { getFirebase } from "@/utils/firebaseConfig";
 import { ascii, movableDests, playMoves, sideToMove } from "@/utils/chess";
 
-const Chess = typeof ChessJS === "function" ? ChessJS : ChessJS.Chess;
-
 function Game({ id }) {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState([]);
   const [movesHistory, setMovesHistory] = useState([]);
   const [puzzleId, setPuzzleId] = useState("");
+  const [playersList, setPlayersList] = useState([]);
 
   useEffect(() => {
     const db = getFirebase().database();
@@ -20,27 +19,24 @@ function Game({ id }) {
     gameRef.on("value", (snapshot) => {
       const game = snapshot.val();
       setFen(game.fen);
-      console.log("game.moves: ", game.moves);
       setMovesHistory(game.moves || []);
       setPuzzleId(game.currentPuzzle.id);
+      setPlayersList(game.players);
     });
   }, []);
 
   const onMove = async (from, to) => {
-    console.log(from, to);
-    console.log("movesHistory:", movesHistory);
-
     try {
+      const playerName= sessionStorage.getItem("name");
       const response = await fetch(
         `/api/puzzle/validateMove?moves=${[
           ...movesHistory,
           `${from}${to}`,
-        ]}&puzzleId=${puzzleId}&gameId=${id}`
+        ]}&puzzleId=${puzzleId}&gameId=${id}&playerName=${playerName}`
       );
       if (response.ok) {
         const result = await response.json();
         if (!result.valid) {
-          console.log(ascii(fen));
           setFen(fen);
           setLastMove([from, to]);
           setMovesHistory(movesHistory);
@@ -54,7 +50,7 @@ function Game({ id }) {
   return (
     <div className="pt-8 grid grid-cols-12 gap-4">
       <div className="col-span-3">
-        <PlayersList players={["player1", "player2", "guest0"]} />
+        <PlayersList players={playersList} />
       </div>
       <div className="col-span-5">
         <Chessground

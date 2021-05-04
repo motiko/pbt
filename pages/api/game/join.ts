@@ -16,10 +16,12 @@ export default (req, res) => {
       var data = snapshot.val();
       console.log(data);
       const newPlayers = [...data.players, name?.substr(0, 32)];
+      const newScores = { ...data.scores, [name?.substr(0, 32)]: 0 };
       console.log(newPlayers);
       gameRef.update(
         {
           players: newPlayers,
+          scores: newScores,
         },
         function (error) {
           if (error) {

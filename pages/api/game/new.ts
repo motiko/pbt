@@ -18,6 +18,9 @@ export default (req, res) => {
       .set(
         {
           players: [name?.substr(0, 32)],
+          scores: {
+            [name?.substr(0, 32)]:0
+          },
           fen: newFen,
           moves: [],
           currentPuzzle: {
