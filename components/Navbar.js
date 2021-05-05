@@ -4,7 +4,7 @@ function Navbar() {
   return (
     <header className="text-gray-400 bg-gray-900 body-font">
       <div className="container flex flex-col flex-wrap items-center p-5 mx-auto md:flex-row">
-        <Link href="#">
+        <Link href="/">
           <a className="flex items-center mb-4 font-medium text-white title-font md:mb-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"

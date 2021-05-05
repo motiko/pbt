@@ -25,7 +25,12 @@ function NewGameDialog() {
         <div className="w-full px-4 lg:w-4/12">
           <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-gray-300 border-0 rounded-lg shadow-lg">
             <div className="px-6 py-6 mb-0 rounded-t">
-              <form>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  newGame();
+                }}
+              >
                 <div className="relative w-full mb-3">
                   <label
                     htmlFor="difficulty"
@@ -38,7 +43,6 @@ function NewGameDialog() {
                       type="text"
                       placeholder="Guest"
                       onChange={(e) => {
-                        console.log(e.target.value);
                         setName(e.target.value);
                       }}
                       className="relative w-full px-3 py-3 text-sm bg-white border-0 rounded shadow outline-none placeholder-blueGray-300 text-blueGray-600 focus:outline-none focus:ring"

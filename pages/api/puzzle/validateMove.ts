@@ -25,11 +25,8 @@ export default (req, res) => {
       .ref("games/" + gameId)
       .transaction((game) => {
         if (game === null) {
-          console.log("game is null");
           return null;
         }
-        console.log("???");
-        console.log("game is not null", game);
         const scores = game.scores;
         return {
           ...game,
@@ -41,6 +38,17 @@ export default (req, res) => {
       });
     res.json({ valid: true, win: true, currentPuzzle });
   } else if (replyMove == "invalid" || replyMove == "retry") {
+    rtdb()
+      .ref("games/" + gameId)
+      .transaction((game) => {
+        if (game === null) {
+          return null;
+        }
+        return {
+          ...game,
+          scores: { ...game.scores, [playerName]: game.scores[playerName] - 1 },
+        };
+      });
     res.json({ valid: false });
   } else {
     // valid

@@ -4,9 +4,8 @@ import { useState } from "react";
 function JoinGameDialog({ id }) {
   const router = useRouter();
   const [name, setName] = useState("");
-  async function newGame() {
+  async function joinGame() {
     try {
-      console.log(id);
       sessionStorage.setItem("name", name);
       const response = await fetch(`/api/game/join`, {
         method: "POST",
@@ -26,7 +25,12 @@ function JoinGameDialog({ id }) {
         <div className="w-full px-4 lg:w-4/12">
           <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-gray-300 border-0 rounded-lg shadow-lg">
             <div className="px-6 py-6 mb-0 rounded-t">
-              <form>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  joinGame();
+                }}
+              >
                 <div className="relative w-full mb-3">
                   <label
                     htmlFor="difficulty"
@@ -49,9 +53,9 @@ function JoinGameDialog({ id }) {
                 <div className="mt-6 text-center">
                   <button
                     className="w-full px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase bg-gray-900 rounded shadow outline-none active:bg-gray-700 hover:shadow-lg focus:outline-none"
-                    type="button"
+                    type="submit"
                     style={{ transition: "all .15s ease" }}
-                    onClick={newGame}
+                    onClick={joinGame}
                   >
                     Start
                   </button>

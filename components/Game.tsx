@@ -5,6 +5,7 @@ import PlayersList from "./PlayersList";
 import * as ChessJS from "chess.js";
 import { getFirebase } from "@/utils/firebaseConfig";
 import { ascii, movableDests, playMoves, sideToMove } from "@/utils/chess";
+import router from "next/router";
 
 function Game({ id }) {
   const [fen, setFen] = useState("");
@@ -14,6 +15,12 @@ function Game({ id }) {
   const [scores, setScores] = useState([]);
 
   useEffect(() => {
+    const playerName = sessionStorage.getItem("name");
+    if (!playerName) {
+      router.push({
+        pathname: `/game/${id}/join`,
+      });
+    }
     const db = getFirebase().database();
     const gameRef = db.ref(`games/${id}`);
     gameRef.on("value", (snapshot) => {
@@ -27,7 +34,7 @@ function Game({ id }) {
 
   const onMove = async (from, to) => {
     try {
-      const playerName= sessionStorage.getItem("name");
+      const playerName = sessionStorage.getItem("name");
       const response = await fetch(
         `/api/puzzle/validateMove?moves=${[
           ...movesHistory,
