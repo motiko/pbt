@@ -11,7 +11,7 @@ function GameCard({ game }) {
   );
 }
 
-function GamesList({ q }) {
+function GamesList() {
   const [games, setGames] = useState([]);
   useEffect(() => {
     const db = getFirebase().database();
