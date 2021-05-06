@@ -4,4 +4,4 @@ const NewGamePage = (props) => {
   return <NewGameDialog {...props} />;
 };
 
-export default NewGameDialog;
+export default NewGamePage;

@@ -1,6 +1,6 @@
 import rtdb from "@/utils/firbase-admin";
 import { byId, randomPuzzle } from "@/utils/getPuzzle";
-import { Chess, playMoves } from "@/utils/chess";
+import { playMoves } from "@/utils/chess";
 
 export default (req, res) => {
   const { puzzleId, gameId, playerName } = req.query;
@@ -65,7 +65,7 @@ export default (req, res) => {
           error: "game not found",
         });
       }
-      var data = snapshot.val();
+      const data = snapshot.val();
       console.log(data);
       gameRef.update({
         fen: newFen,

@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chessground from "react-chessground";
 import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
-import * as ChessJS from "chess.js";
 import { getFirebase } from "@/utils/firebaseConfig";
-import { ascii, movableDests, playMoves, sideToMove } from "@/utils/chess";
+import { movableDests, sideToMove } from "@/utils/chess";
 import router from "next/router";
 
 function Game({ id }) {

@@ -1,6 +1,4 @@
-import Link from "next/link";
-
-function Footer(props) {
+function Footer() {
   return (
     <footer className="text-gray-400 bg-gray-900 body-font">
       <div className="container flex flex-col items-center px-5 py-8 mx-auto sm:flex-row">

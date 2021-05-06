@@ -1,6 +1,6 @@
 import GamesList from "@/components/GamesList";
 
-const HomePage = (props) => {
+const HomePage = () => {
   return <GamesList  />;
 };
 

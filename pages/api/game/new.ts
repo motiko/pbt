@@ -12,14 +12,14 @@ export default (req, res) => {
   const { name = "" } = JSON.parse(req.body);
   console.log(name);
   const newFen = playMoves(puzzle.fen, [puzzle.initialMove.uci]);
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>((resolve) => {
     rtdb()
       .ref("games/" + id)
       .set(
         {
           players: [name?.substr(0, 32)],
           scores: {
-            [name?.substr(0, 32)]:0
+            [name?.substr(0, 32)]: 0,
           },
           fen: newFen,
           moves: [],

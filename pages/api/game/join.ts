@@ -13,7 +13,7 @@ export default (req, res) => {
         });
         reject();
       }
-      var data = snapshot.val();
+      const data = snapshot.val();
       console.log(data);
       const newPlayers = [...data.players, name?.substr(0, 32)];
       const newScores = { ...data.scores, [name?.substr(0, 32)]: 0 };
