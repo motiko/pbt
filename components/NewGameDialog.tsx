@@ -27,8 +27,8 @@ function NewGameDialog() {
             <div className="px-6 py-6 mb-0 rounded-t">
               <form
                 onSubmit={(e) => {
-                  e.preventDefault();
                   newGame();
+                  e.preventDefault();
                 }}
               >
                 <div className="relative w-full mb-3">

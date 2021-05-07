@@ -32,7 +32,7 @@ function GamesList() {
   }, []);
   return (
     <div className="p-8 text-sm font-bold text-gray-600 bg-gray-300 rounded-lg shadow-lg">
-      {games.map((game ) => (
+      {games.map((game) => (
         <GameCard game={game} />
       ))}
     </div>
