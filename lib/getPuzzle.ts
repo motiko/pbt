@@ -1,19 +1,16 @@
-import puzzles from "data/repetition/level-10";
+import puzzles from "data/repetition/level-10.json";
+import { randomNum } from "./utils";
 
-function randomNum(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-}
-
-function byId(puzzleId) {
+export function byId(puzzleId) {
   return puzzles.find((p) => p.id == puzzleId);
 }
 
-function randomPuzzle() {
+export function randomPuzzle() {
   const puzzleNum = randomNum(0, puzzles.length - 1);
   return puzzles[puzzleNum];
 }
 
-function evaluateLine(line, moves) {
+export function evaluateLine(line, moves) {
   if (moves.length === 0) {
     if (Object.values(line)[0] === "win") {
       return "win";
@@ -33,5 +30,3 @@ function evaluateLine(line, moves) {
     return "invalid";
   }
 }
-
-export { randomPuzzle, byId, evaluateLine };

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Chessground from "react-chessground";
 import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
-import { getFirebase } from "@/utils/firebaseConfig";
-import { movableDests, sideToMove } from "@/utils/chess";
+import { getFirebase } from "@/lib/firebase";
+import { movableDests, sideToMove } from "@/lib/chess";
 import router from "next/router";
 
 function Game({ id }) {
@@ -35,7 +35,7 @@ function Game({ id }) {
     try {
       const playerName = sessionStorage.getItem("name");
       const response = await fetch(
-        `/api/puzzle/validateMove?moves=${[
+          `/api/game/validateMove?moves=${[
           ...movesHistory,
           `${from}${to}`,
         ]}&puzzleId=${puzzleId}&gameId=${id}&playerName=${playerName}`

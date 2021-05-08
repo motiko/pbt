@@ -1,7 +1,7 @@
 import { rtdb } from "@/dal/realtime-db";
 import { submitMove, takePoint } from "@/dal/game";
-import { byId, randomPuzzle } from "@/utils/getPuzzle";
-import { playMoves } from "@/utils/chess";
+import { byId, randomPuzzle } from "@/lib/getPuzzle";
+import { playMoves } from "@/lib/chess";
 
 export default (req, res) => {
   const { puzzleId, gameId, playerName } = req.query;

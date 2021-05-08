@@ -1,13 +1,10 @@
 import type { Game } from "@/types";
-import { randomPuzzle } from "@/utils/getPuzzle";
-import { playMoves } from "@/utils/chess";
+import { randomPuzzle } from "@/lib/getPuzzle";
+import { playMoves } from "@/lib/chess";
 import { rtdb } from "./realtime-db";
+import { randomNum } from "@/lib/utils";
 
-function randomNum(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
-}
-
-async function createNewGame(
+export async function createNewGame(
   ownerName: string
 ): Promise<Game & { key: string }> {
   const name = ownerName?.substr?.(0, 32);
@@ -41,7 +38,7 @@ async function createNewGame(
   });
 }
 
-function takePoint(gameKey: string, playerName: string): void {
+export function takePoint(gameKey: string, playerName: string): void {
   rtdb()
     .ref("games/" + gameKey)
     .transaction((game) => {
@@ -55,7 +52,7 @@ function takePoint(gameKey: string, playerName: string): void {
     });
 }
 
-function submitMove(
+export function submitMove(
   gameKey: string,
   playerName: string,
   newFen: string,
@@ -78,6 +75,3 @@ function submitMove(
       };
     });
 }
-
-export { createNewGame, takePoint, submitMove };
-

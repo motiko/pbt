@@ -1,4 +1,4 @@
-import { getFirebase } from "@/utils/firebaseConfig";
+import { getFirebase } from "@/lib/firebase";
 import { useEffect, useState } from "react";
 
 function GameCard({ game }) {
