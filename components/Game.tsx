@@ -79,7 +79,7 @@ function Game({ id }) {
         />
       </div>
       <div className="col-span-3">
-        <MovesList moves={movesHistory} firstColor={"white"} />
+        <MovesList moves={movesHistory} />
       </div>
     </div>
   );
