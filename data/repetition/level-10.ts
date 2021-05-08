@@ -1,4 +1,4 @@
-[
+export default const puzzles = [
   {
     "id": 21782,
     "fen": "r2qnr2/1p1b1R1k/p1n1p2p/4P2Q/8/P1N5/1PP3PP/R5K1 b - - 0 17",

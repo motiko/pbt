@@ -1,4 +1,4 @@
-import puzzles from "data/repetition/level-10.json";
+import puzzles from "data/repetition/level-10";
 
 function randomNum(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
