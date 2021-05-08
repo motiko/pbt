@@ -35,10 +35,10 @@ function Game({ id }) {
     try {
       const playerName = sessionStorage.getItem("name");
       const response = await fetch(
-          `/api/game/validateMove?moves=${[
+        `/api/game/${id}/validateMove?moves=${[
           ...movesHistory,
           `${from}${to}`,
-        ]}&puzzleId=${puzzleId}&gameId=${id}&playerName=${playerName}`
+        ]}&puzzleId=${puzzleId}&playerName=${playerName}`
       );
       if (response.ok) {
         const result = await response.json();

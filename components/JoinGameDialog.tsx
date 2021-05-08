@@ -7,14 +7,20 @@ function JoinGameDialog({ id }) {
   async function joinGame() {
     try {
       sessionStorage.setItem("name", name);
-      const response = await fetch(`/api/game/join`, {
+      const response = await fetch(`/api/game/${id}/join`, {
         method: "POST",
         body: JSON.stringify({ name, id }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const game = await response.json();
-      router.push({
-        pathname: `/game/${game.id}/play`,
-      });
+      console.log(game);
+      if (game.id) {
+        router.push({
+          pathname: `/game/${id}/play`,
+        });
+      }
     } catch (e) {
       console.error("Server error: ", e);
     }
@@ -43,7 +49,6 @@ function JoinGameDialog({ id }) {
                       type="text"
                       placeholder="Guest"
                       onChange={(e) => {
-                        console.log(e.target.value);
                         setName(e.target.value);
                       }}
                       className="relative w-full px-3 py-3 text-sm bg-white border-0 rounded shadow outline-none placeholder-blueGray-300 text-blueGray-600 focus:outline-none focus:ring"

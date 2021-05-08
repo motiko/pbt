@@ -38,6 +38,37 @@ export async function createNewGame(
   });
 }
 
+export async function joinGame(
+  gameKey: string,
+  playerName: string
+): Promise<void> {
+  const name = playerName?.substr?.(0, 32);
+  return new Promise<void>((resolve, reject) => {
+    const gameRef = rtdb().ref("games/" + gameKey);
+    gameRef.once("value", function (snapshot) {
+      if (!snapshot.exists()) {
+        return reject({ error: "game not found" });
+      }
+      const data = snapshot.val();
+      const newPlayers = [...data.players, name?.substr(0, 32)];
+      const newScores = { ...data.scores, [name?.substr(0, 32)]: 0 };
+      gameRef.update(
+        {
+          players: newPlayers,
+          scores: newScores,
+        },
+        function (error) {
+          if (error) {
+            return reject({ error: "could not update game" + error });
+          } else {
+            return resolve();
+          }
+        }
+      );
+    });
+  });
+}
+
 export function takePoint(gameKey: string, playerName: string): void {
   rtdb()
     .ref("games/" + gameKey)

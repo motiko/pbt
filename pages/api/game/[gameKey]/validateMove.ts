@@ -4,7 +4,7 @@ import { byId, randomPuzzle } from "@/lib/getPuzzle";
 import { playMoves } from "@/lib/chess";
 
 export default (req, res) => {
-  const { puzzleId, gameId, playerName } = req.query;
+  const { puzzleId, gameKey: gameId, playerName } = req.query;
   const movesStr = req.query.moves;
   const puzzle = byId(puzzleId);
   const { lines } = puzzle;
