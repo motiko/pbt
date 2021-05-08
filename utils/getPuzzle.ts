@@ -13,4 +13,25 @@ function randomPuzzle() {
   return puzzles[puzzleNum];
 }
 
-export { randomPuzzle, byId };
+function evaluateLine(line, moves) {
+  if (moves.length === 0) {
+    if (Object.values(line)[0] === "win") {
+      return "win";
+    }
+    return Object.keys(line)[0];
+  }
+
+  if (Object.keys(line).includes(moves[0]) && line[moves[0]] !== "retry") {
+    if (Object.values(line)[0] === "win") {
+      return "win";
+    }
+    return evaluateLine(
+      line[moves[0]],
+      moves.filter((_, i) => i > 0)
+    );
+  } else {
+    return "invalid";
+  }
+}
+
+export { randomPuzzle, byId, evaluateLine };

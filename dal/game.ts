@@ -41,5 +41,43 @@ async function createNewGame(
   });
 }
 
-export { createNewGame };
+function takePoint(gameKey: string, playerName: string): void {
+  rtdb()
+    .ref("games/" + gameKey)
+    .transaction((game) => {
+      if (game === null) {
+        return null;
+      }
+      return {
+        ...game,
+        scores: { ...game.scores, [playerName]: game.scores[playerName] - 1 },
+      };
+    });
+}
+
+function submitMove(
+  gameKey: string,
+  playerName: string,
+  newFen: string,
+  moves: Array<string>
+): void {
+  rtdb()
+    .ref("games/" + gameKey)
+    .transaction((game) => {
+      if (game === null) {
+        return null;
+      }
+      return {
+        ...game,
+        fen: newFen,
+        moves,
+        scores: {
+          ...game.scores,
+          [playerName]: game.scores[playerName] + 1,
+        },
+      };
+    });
+}
+
+export { createNewGame, takePoint, submitMove };
 

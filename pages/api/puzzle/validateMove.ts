@@ -1,4 +1,5 @@
 import { rtdb } from "@/dal/realtime-db";
+import { submitMove, takePoint } from "@/dal/game";
 import { byId, randomPuzzle } from "@/utils/getPuzzle";
 import { playMoves } from "@/utils/chess";
 
@@ -38,17 +39,7 @@ export default (req, res) => {
       });
     res.json({ valid: true, win: true, currentPuzzle });
   } else if (replyMove == "invalid" || replyMove == "retry") {
-    rtdb()
-      .ref("games/" + gameId)
-      .transaction((game) => {
-        if (game === null) {
-          return null;
-        }
-        return {
-          ...game,
-          scores: { ...game.scores, [playerName]: game.scores[playerName] - 1 },
-        };
-      });
+    takePoint(gameId, playerName);
     res.json({ valid: false });
   } else {
     // valid
@@ -57,26 +48,8 @@ export default (req, res) => {
       ...moves,
       replyMove,
     ]);
-    const gameRef = rtdb().ref("games/" + gameId);
-    gameRef.once("value", function (snapshot) {
-      if (!snapshot.exists()) {
-        res.statusCode = 200;
-        res.json({
-          error: "game not found",
-        });
-      }
-      const data = snapshot.val();
-      console.log(data);
-      gameRef.update({
-        fen: newFen,
-        moves: [...moves, replyMove],
-        scores: {
-          ...data.scores,
-          [playerName]: data.scores[playerName] + 1,
-        },
-      });
-      res.json({ valid: true });
-    });
+    submitMove(gameId, playerName, newFen, [...moves, replyMove]);
+    res.json({ valid: true });
   }
 };
 
