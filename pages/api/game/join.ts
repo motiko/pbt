@@ -1,4 +1,4 @@
-import rtdb from "@/utils/firbase-admin";
+import { rtdb } from "@/dal/realtime-db";
 
 export default (req, res) => {
   const { name, id } = JSON.parse(req.body);

@@ -7,16 +7,25 @@ function NewGameDialog() {
   async function newGame() {
     sessionStorage.setItem("name", name);
     try {
-      const response = await fetch("/api/game/new", {
-        method: "POST",
-        body: JSON.stringify({ name }),
-      });
-      const game = await response.json();
-      router.push({
-        pathname: `/game/${game.id}/play`,
-      });
+      const response = await (
+        await fetch("/api/game/new", {
+          method: "POST",
+          body: JSON.stringify({ name }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      ).json();
+      console.log(response);
+      if (response.error) {
+        console.error("Server Error: ", response.error);
+      } else {
+        router.push({
+          pathname: `/game/${response.key}/play`,
+        });
+      }
     } catch (e) {
-      console.error("Server error: ", e);
+      console.error("Network error: ", e);
     }
   }
   return (

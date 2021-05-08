@@ -1,5 +1,5 @@
 import Game from "@/components/Game";
-import rtdb from "@/utils/firbase-admin";
+import { rtdb } from "@/dal/realtime-db";
 
 const GamePage = (props) => {
   return <Game {...props} />;

@@ -1,4 +1,4 @@
-import rtdb from "@/utils/firbase-admin";
+import { rtdb } from "@/dal/realtime-db";
 import { byId, randomPuzzle } from "@/utils/getPuzzle";
 import { playMoves } from "@/utils/chess";
 

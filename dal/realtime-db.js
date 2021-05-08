@@ -2,7 +2,7 @@
 import admin from "firebase-admin";
 // import serviceAccount from "./pzl-btl-firebase-adminsdk-myu3e-3ff1051e6a.json";
 
-export default function rtdb() {
+export function rtdb() {
   if (!admin.apps.length) {
     try {
       admin.initializeApp({
