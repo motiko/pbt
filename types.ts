@@ -1,6 +1,6 @@
 type FEN = string;
 type UCIMove = string;
-type PuzzleId = string;
+type PuzzleId = number;
 
 type Scores = {
   [playerName: string]: number;

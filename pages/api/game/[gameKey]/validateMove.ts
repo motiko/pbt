@@ -1,6 +1,5 @@
-import { rtdb } from "@/dal/realtime-db";
-import { submitMove, takePoint } from "@/dal/game";
-import { byId, randomPuzzle } from "@/lib/getPuzzle";
+import { startNewPuzzle, submitMove, takePoint } from "@/dal/game";
+import { byId, randomPuzzle, evaluateLine } from "@/lib/getPuzzle";
 import { playMoves } from "@/lib/chess";
 
 export default (req, res) => {
@@ -15,29 +14,17 @@ export default (req, res) => {
   console.log("Result: ", replyMove);
   res.statusCode = 200;
   if (replyMove == "win") {
-    const newPuzzle = randomPuzzle();
-    const currentPuzzle = {
-      id: newPuzzle.id,
-      initialFen: newPuzzle.fen,
-      initialMove: newPuzzle.initialMove.uci,
+    const newFullPuzzle = randomPuzzle();
+    const newPuzzle = {
+      id: newFullPuzzle.id,
+      initialFen: newFullPuzzle.fen,
+      initialMove: newFullPuzzle.initialMove.uci,
     };
-    const newFen = playMoves(newPuzzle.fen, [newPuzzle.initialMove.uci]);
-    rtdb()
-      .ref("games/" + gameId)
-      .transaction((game) => {
-        if (game === null) {
-          return null;
-        }
-        const scores = game.scores;
-        return {
-          ...game,
-          fen: newFen,
-          moves: [],
-          currentPuzzle,
-          scores: { ...scores, [playerName]: scores[playerName] + 2 },
-        };
-      });
-    res.json({ valid: true, win: true, currentPuzzle });
+    const newFen = playMoves(newFullPuzzle.fen, [
+      newFullPuzzle.initialMove.uci,
+    ]);
+    startNewPuzzle(gameId, newFen, newPuzzle, playerName);
+    res.json({ valid: true, win: true, currentPuzzle: newPuzzle });
   } else if (replyMove == "invalid" || replyMove == "retry") {
     takePoint(gameId, playerName);
     res.json({ valid: false });
@@ -52,24 +39,3 @@ export default (req, res) => {
     res.json({ valid: true });
   }
 };
-
-function evaluateLine(line, moves) {
-  if (moves.length === 0) {
-    if (Object.values(line)[0] === "win") {
-      return "win";
-    }
-    return Object.keys(line)[0];
-  }
-
-  if (Object.keys(line).includes(moves[0]) && line[moves[0]] !== "retry") {
-    if (Object.values(line)[0] === "win") {
-      return "win";
-    }
-    return evaluateLine(
-      line[moves[0]],
-      moves.filter((_, i) => i > 0)
-    );
-  } else {
-    return "invalid";
-  }
-}

@@ -1,4 +1,4 @@
-import type { Game } from "@/types";
+import type { Game, Puzzle } from "@/types";
 import { randomPuzzle } from "@/lib/getPuzzle";
 import { playMoves } from "@/lib/chess";
 import { rtdb } from "./realtime-db";
@@ -103,6 +103,29 @@ export function submitMove(
           ...game.scores,
           [playerName]: game.scores[playerName] + 1,
         },
+      };
+    });
+}
+
+export function startNewPuzzle(
+  gameKey: string,
+  newFen: string,
+  newPuzzle: Puzzle,
+  playerName: string
+): void {
+  rtdb()
+    .ref("games/" + gameKey)
+    .transaction((game) => {
+      if (game === null) {
+        return null;
+      }
+      const scores = game.scores;
+      return {
+        ...game,
+        fen: newFen,
+        moves: [],
+        currentPuzzle: newPuzzle,
+        scores: { ...scores, [playerName]: scores[playerName] + 2 },
       };
     });
 }
