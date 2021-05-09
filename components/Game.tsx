@@ -6,10 +6,11 @@ import { getFirebase } from "@/lib/firebase";
 import { movableDests, sideToMove } from "@/lib/chess";
 import router from "next/router";
 import { Scores } from "@/types";
+import { validateMove } from "@/lib/fetch";
 
 export type GameProps = { id: string };
 
-function Game({ id }: GameProps ): JSX.Element {
+function Game({ id }: GameProps): JSX.Element {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState([]);
   const [movesHistory, setMovesHistory] = useState([]);
@@ -35,24 +36,17 @@ function Game({ id }: GameProps ): JSX.Element {
   }, []);
 
   const onMove = async (from, to) => {
-    try {
-      const playerName = sessionStorage.getItem("name");
-      const response = await fetch(
-        `/api/game/${id}/validateMove?moves=${[
-          ...movesHistory,
-          `${from}${to}`,
-        ]}&puzzleId=${puzzleId}&playerName=${playerName}`
-      );
-      if (response.ok) {
-        const result = await response.json();
-        if (!result.valid) {
-          setFen(fen);
-          setLastMove([from, to]);
-          setMovesHistory(movesHistory);
-        }
-      }
-    } catch (e) {
-      console.error(e);
+    const playerName = sessionStorage.getItem("name");
+    const result = await validateMove(
+      id,
+      [...movesHistory, `${from}${to}`],
+      playerName,
+      Number(puzzleId)
+    );
+    if (!result) {
+      setFen(fen);
+      setLastMove([from, to]);
+      setMovesHistory(movesHistory);
     }
   };
 

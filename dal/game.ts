@@ -1,8 +1,24 @@
 import type { Game, Puzzle } from "@/types";
 import { randomPuzzle } from "@/lib/getPuzzle";
 import { playMoves } from "@/lib/chess";
-import { rtdb } from "./realtime-db";
 import { randomNum } from "@/lib/utils";
+import admin from "firebase-admin";
+
+function rtdb() {
+  if (!admin.apps.length) {
+    try {
+      admin.initializeApp({
+        credential: admin.credential.cert(
+          JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON)
+        ),
+        databaseURL: "https://pzl-btl-default-rtdb.firebaseio.com",
+      });
+    } catch (error) {
+      console.log("Firebase admin initialization error", error.stack);
+    }
+  }
+  return admin.database();
+}
 
 export async function createNewGame(
   ownerName: string

@@ -1,6 +1,6 @@
 type FEN = string;
 export type UCIMove = string;
-type PuzzleId = number;
+export type PuzzleId = number;
 
 export type Moves = Array<UCIMove>;
 
@@ -30,8 +30,8 @@ export type Line =
       [move: string]: Line;
     }
   | "win"
-  | "retry" | string;
-
+  | "retry"
+  | string;
 
 export type StoredPuzzle = {
   id: number;
