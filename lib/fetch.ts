@@ -1,4 +1,20 @@
+import type { NewGameData, NewGameResponse } from "@/pages/api/game/new";
 import type { GameKey, Moves, PuzzleId } from "@/types";
+
+export async function newGame(name: string): Promise<NewGameData> {
+  const response = await fetch("/api/game/new", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const { data, errors }: NewGameResponse = await response.json();
+  if (response.ok) {
+    return data;
+  }
+  return Promise.reject(errors);
+}
 
 export async function joinGame(
   gameKey: GameKey,
@@ -15,7 +31,7 @@ export async function joinGame(
     return response.ok;
   } catch (e) {
     console.error(e);
-    return false;
+    return Promise.reject(false);
   }
 }
 
@@ -36,8 +52,6 @@ export async function validateMove(
     }
   } catch (e) {
     console.error(e);
-    return false;
+    return Promise.reject(false);
   }
 }
-
-// export async function newGame(gameKey: GameKey) {}

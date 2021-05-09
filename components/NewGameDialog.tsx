@@ -1,31 +1,19 @@
+import { newGame } from "@/lib/fetch";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 function NewGameDialog(): JSX.Element {
   const router = useRouter();
   const [name, setName] = useState("");
-  async function newGame() {
+  async function onNewGame() {
     sessionStorage.setItem("name", name);
     try {
-      const response = await (
-        await fetch("/api/game/new", {
-          method: "POST",
-          body: JSON.stringify({ name }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-      ).json();
-      console.log(response);
-      if (response.error) {
-        console.error("Server Error: ", response.error);
-      } else {
-        router.push({
-          pathname: `/game/${response.key}/play`,
-        });
-      }
+      const response = await newGame(name);
+      router.push({
+        pathname: `/game/${response.key}/play`,
+      });
     } catch (e) {
-      console.error("Network error: ", e);
+      console.error("error: ", e);
     }
   }
   return (
@@ -36,7 +24,7 @@ function NewGameDialog(): JSX.Element {
             <div className="px-6 py-6 mb-0 rounded-t">
               <form
                 onSubmit={(e) => {
-                  newGame();
+                  onNewGame();
                   e.preventDefault();
                 }}
               >
@@ -77,7 +65,7 @@ function NewGameDialog(): JSX.Element {
                     className="w-full px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase bg-gray-900 rounded shadow outline-none active:bg-gray-700 hover:shadow-lg focus:outline-none"
                     type="button"
                     style={{ transition: "all .15s ease" }}
-                    onClick={newGame}
+                    onClick={onNewGame}
                   >
                     Start
                   </button>
