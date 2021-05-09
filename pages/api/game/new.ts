@@ -1,6 +1,14 @@
 import { createNewGame } from "@/dal/game";
+import { UCIMove } from "@/types";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default function newGameApi(req, res) {
+type Response =
+  | { error: string }
+  | { fen: string; initialMove: UCIMove; key: string };
+export default function newGameApi(
+  req: NextApiRequest,
+  res: NextApiResponse<Response>
+): Promise<void> {
   console.log(req.body);
   const { name = "" } = req.body;
   console.log(name);
@@ -13,7 +21,6 @@ export default function newGameApi(req, res) {
         initialMove: newGame.currentPuzzle.initialMove,
         key: newGame.key,
       });
-      return true;
     })
     .catch((error) => {
       console.error(error);

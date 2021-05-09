@@ -5,7 +5,13 @@ import React from "react";
 import Footer from "../components/Footer";
 import "../styles/chessground.css";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({
+  Component,
+  pageProps,
+}: {
+  Component: React.FC;
+  pageProps: Record<string, unknown>;
+}): JSX.Element {
   return (
     <>
       <Head>

@@ -1,4 +1,4 @@
-function Footer() {
+function Footer(): JSX.Element {
   return (
     <footer className="text-gray-400 bg-gray-900 body-font">
       <div className="container flex flex-col items-center px-5 py-8 mx-auto sm:flex-row">

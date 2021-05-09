@@ -1,8 +1,10 @@
+import { Moves } from "@/types";
+
 function Move({ notation }) {
   return <div>{notation}</div>;
 }
 
-function MovesList({ moves }) {
+function MovesList({ moves }: { moves: Moves }): JSX.Element {
   return (
     <div className="px-3 py-4 bg-gray-300 rounded-lg shadow-lg grid-cols-2 grid gap-1 place-items-center">
       {moves.map((m, i) => (

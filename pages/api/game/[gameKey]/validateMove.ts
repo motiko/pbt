@@ -1,16 +1,26 @@
 import { startNewPuzzle, submitMove, takePoint } from "@/dal/game";
 import { byId, randomPuzzle, evaluateLine } from "@/lib/getPuzzle";
 import { playMoves } from "@/lib/chess";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Puzzle } from "@/types";
 
-export default (req, res) => {
-  const { puzzleId, gameKey: gameId, playerName } = req.query;
-  const movesStr = req.query.moves;
-  const puzzle = byId(puzzleId);
+type Response = { valid: boolean; win?: boolean; currentPuzzle?: Puzzle };
+export default (req: NextApiRequest, res: NextApiResponse<Response>): void => {
+  const { puzzleId, gameKey: gameId, playerName, moves } = req.query;
+  if (
+    typeof puzzleId !== "string" ||
+    typeof gameId !== "string" ||
+    typeof moves !== "string" ||
+    typeof playerName !== "string"
+  ) {
+    return;
+  }
+  const puzzle = byId(Number(puzzleId));
   const { lines } = puzzle;
-  const moves = movesStr.split(",");
-  console.log("Submitted Moves:", moves);
+  const movesArr = moves.split(",");
+  console.log("Submitted Moves:", movesArr);
   console.log("Puzzle:", puzzle);
-  const replyMove = evaluateLine(lines, moves);
+  const replyMove = evaluateLine(lines, movesArr);
   console.log("Result: ", replyMove);
   res.statusCode = 200;
   if (replyMove == "win") {
@@ -32,10 +42,10 @@ export default (req, res) => {
     // valid
     const newFen = playMoves(puzzle.fen, [
       puzzle.initialMove.uci,
-      ...moves,
+      ...movesArr,
       replyMove,
     ]);
-    submitMove(gameId, playerName, newFen, [...moves, replyMove]);
+    submitMove(gameId, playerName, newFen, [...movesArr, replyMove]);
     res.json({ valid: true });
   }
 };

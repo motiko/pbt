@@ -1,7 +1,7 @@
 import NewGameDialog from "@/components/NewGameDialog";
 
-const NewGamePage = (props) => {
-  return <NewGameDialog {...props} />;
+const NewGamePage = (): JSX.Element => {
+  return <NewGameDialog  />;
 };
 
 export default NewGamePage;

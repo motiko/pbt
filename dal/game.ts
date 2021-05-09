@@ -21,7 +21,7 @@ export async function createNewGame(
       moves: [],
       puzzlesHistory: [],
       currentPuzzle: {
-        id: String(puzzle.id),
+        id: puzzle.id,
         initialFen: puzzle.fen,
         initialMove: puzzle.initialMove.uci,
       },

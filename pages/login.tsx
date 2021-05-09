@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-function Login() {
+function Login(): JSX.Element {
   return (
     <div className="container h-full px-4 mx-auto">
       <div className="flex items-center content-center justify-center h-full">

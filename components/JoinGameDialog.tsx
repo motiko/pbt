@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-function JoinGameDialog({ id }) {
+function JoinGameDialog({ id }: { id: string }): JSX.Element {
   const router = useRouter();
   const [name, setName] = useState("");
   async function joinGame() {

@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-function NewGameDialog() {
+function NewGameDialog(): JSX.Element {
   const router = useRouter();
   const [name, setName] = useState("");
   async function newGame() {

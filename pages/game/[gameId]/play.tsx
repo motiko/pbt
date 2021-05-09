@@ -1,13 +1,22 @@
-import Game from "@/components/Game";
+import Game, { GameProps } from "@/components/Game";
 import { rtdb } from "@/dal/realtime-db";
 
-const GamePage = (props) => {
+const GamePage = (props: GameProps): JSX.Element => {
   return <Game {...props} />;
 };
 
 export default GamePage;
 
-export async function getServerSideProps(context) {
+type Query = {
+  gameId: string;
+};
+type Context = {
+  query: Query;
+};
+
+export async function getServerSideProps(
+  context: Context
+): Promise<{ props: GameProps }> {
   const { query } = context;
   const snapshot = await rtdb().ref(`games/${query.gameId}`).get();
   const game = await snapshot.val();

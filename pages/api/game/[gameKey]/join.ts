@@ -1,8 +1,18 @@
 import { joinGame } from "@/dal/game";
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default (req, res) => {
+type Response =
+  | {
+      error: string;
+    }
+  | { id: string };
+
+export default (req: NextApiRequest, res: NextApiResponse<Response>): Promise<void> => {
   const { name } = req.body;
   const { gameKey } = req.query;
+  if (typeof gameKey !== "string") {
+    return;
+  }
   console.log(gameKey);
   console.log(name);
   return joinGame(gameKey, name)

@@ -5,13 +5,16 @@ import PlayersList from "./PlayersList";
 import { getFirebase } from "@/lib/firebase";
 import { movableDests, sideToMove } from "@/lib/chess";
 import router from "next/router";
+import { Scores } from "@/types";
 
-function Game({ id }) {
+export type GameProps = { id: string };
+
+function Game({ id }: GameProps ): JSX.Element {
   const [fen, setFen] = useState("");
   const [lastMove, setLastMove] = useState([]);
   const [movesHistory, setMovesHistory] = useState([]);
   const [puzzleId, setPuzzleId] = useState("");
-  const [scores, setScores] = useState([]);
+  const [scores, setScores] = useState<Scores>({});
 
   useEffect(() => {
     const playerName = sessionStorage.getItem("name");

@@ -1,6 +1,6 @@
 import GamesList from "@/components/GamesList";
 
-const HomePage = () => {
+const HomePage = (): JSX.Element => {
   return <GamesList  />;
 };
 
