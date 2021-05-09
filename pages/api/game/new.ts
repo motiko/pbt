@@ -14,9 +14,16 @@ export default function newGameApi(
   req: NextApiRequest,
   res: NextApiResponse<NewGameResponse>
 ): Promise<void> {
-  console.log(req.body);
-  const { name = "" } = req.body;
+  const { name } = req.body;
   console.log(name);
+  if (!name) {
+    const response = {
+      errors: ["No name"],
+    };
+    res.statusCode = 500;
+    res.json(response);
+    return Promise.reject(response);
+  }
   return createNewGame(name)
     .then((newGame) => {
       console.log(newGame);
