@@ -1,6 +1,7 @@
 type FEN = string;
 export type UCIMove = string;
 export type PuzzleId = number;
+export type GameKey = string;
 
 export type Moves = Array<UCIMove>;
 

@@ -1,22 +1,15 @@
+import { joinGame } from "@/lib/fetch";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 function JoinGameDialog({ id }: { id: string }): JSX.Element {
   const router = useRouter();
   const [name, setName] = useState("");
-  async function joinGame() {
+  async function onJoin() {
     try {
       sessionStorage.setItem("name", name);
-      const response = await fetch(`/api/game/${id}/join`, {
-        method: "POST",
-        body: JSON.stringify({ name, id }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const game = await response.json();
-      console.log(game);
-      if (game.id) {
+      const join = await joinGame(id, name);
+      if (join) {
         router.push({
           pathname: `/game/${id}/play`,
         });
@@ -29,12 +22,12 @@ function JoinGameDialog({ id }: { id: string }): JSX.Element {
     <div className="container flex-grow px-4 mx-auto">
       <div className="flex items-center content-center justify-center h-full">
         <div className="w-full px-4 lg:w-4/12">
-          <div className="relative flex flex-col w-full min-w-0 mb-6 break-words bg-gray-300 border-0 rounded-lg shadow-lg">
+          <div className="flex flex-col w-full min-w-0 mb-6 break-words bg-gray-300 border-0 rounded-lg shadow-lg relati ve">
             <div className="px-6 py-6 mb-0 rounded-t">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  joinGame();
+                  onJoin();
                 }}
               >
                 <div className="relative w-full mb-3">
@@ -60,7 +53,7 @@ function JoinGameDialog({ id }: { id: string }): JSX.Element {
                     className="w-full px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase bg-gray-900 rounded shadow outline-none active:bg-gray-700 hover:shadow-lg focus:outline-none"
                     type="submit"
                     style={{ transition: "all .15s ease" }}
-                    onClick={joinGame}
+                    onClick={onJoin}
                   >
                     Start
                   </button>
