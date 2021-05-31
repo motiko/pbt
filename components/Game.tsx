@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import Chessground from "react-chessground";
 import MovesList from "./MovesList";
 import PlayersList from "./PlayersList";
 import { getFirebase } from "@/lib/firebase";
-import { movableDests, sideToMove } from "@/lib/chess";
+// import { movableDests, sideToMove } from "@/lib/chess";
 import router from "next/router";
 import { Scores } from "@/types";
 import { validateMove } from "@/lib/fetch";
+import { ChessBoard } from "./ChessBoard";
 
 export type GameProps = { id: string };
 
 function Game({ id }: GameProps): JSX.Element {
   const [fen, setFen] = useState("");
-  const [lastMove, setLastMove] = useState([]);
+  // const [lastMove, setLastMove] = useState([]);
   const [movesHistory, setMovesHistory] = useState([]);
   const [puzzleId, setPuzzleId] = useState("");
   const [scores, setScores] = useState<Scores>({});
+  const [fails, setFails] = useState(0);
 
   useEffect(() => {
     const playerName = sessionStorage.getItem("name");
@@ -26,16 +27,23 @@ function Game({ id }: GameProps): JSX.Element {
     }
     const db = getFirebase().database();
     const gameRef = db.ref(`games/${id}`);
-    gameRef.on("value", (snapshot) => {
+    const onGameChange = (snapshot) => {
       const game = snapshot.val();
       setFen(game.fen);
       setMovesHistory(game.moves || []);
       setPuzzleId(game.currentPuzzle.id);
       setScores(game.scores);
-    });
+    };
+    gameRef.on("value", onGameChange);
+
+    return () => {
+      gameRef.off("value", onGameChange);
+    };
   }, []);
 
   const onMove = async (from, to) => {
+    console.log(123);
+    console.log(from, to);
     const playerName = sessionStorage.getItem("name");
     const result = await validateMove(
       id,
@@ -43,10 +51,10 @@ function Game({ id }: GameProps): JSX.Element {
       playerName,
       Number(puzzleId)
     );
+    console.log(result);
     if (!result) {
-      setFen(fen);
-      setLastMove([from, to]);
-      setMovesHistory(movesHistory);
+      console.log(result);
+      setFails(fails + 1);
     }
   };
 
@@ -56,24 +64,7 @@ function Game({ id }: GameProps): JSX.Element {
         <PlayersList scores={scores} />
       </div>
       <div className="col-span-5">
-        <Chessground
-          fen={fen}
-          width="35vw"
-          height="35vw"
-          movable={{
-            free: false,
-            dests: movableDests(fen),
-            color: sideToMove(fen),
-            showDests: true,
-          }}
-          turnColor={sideToMove(fen)}
-          lastMove={lastMove}
-          animation={{
-            enabled: true,
-            duration: 100,
-          }}
-          onMove={onMove}
-        />
+        <ChessBoard initialFen={fen} onMove={onMove} key={fails} />
       </div>
       <div className="col-span-3">
         <MovesList moves={movesHistory} />
