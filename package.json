@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "eslint .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "cp node_modules/replicache/out/*.wasm public/"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.3.2",
@@ -22,6 +23,8 @@
     "react": "17.0.2",
     "react-chessground": "^1.5.0",
     "react-dom": "17.0.2",
+    "replicache": "^6.2.2",
+    "replicache-react-util": "^2.2.0",
     "tailwindcss": "^2.1.2"
   },
   "devDependencies": {
