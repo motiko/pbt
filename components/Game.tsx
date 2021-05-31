@@ -7,16 +7,23 @@ import router from "next/router";
 import { Scores } from "@/types";
 import { validateMove } from "@/lib/fetch";
 import { ChessBoard } from "./ChessBoard";
+import { useSubscribe } from "replicache-react-util";
 
-export type GameProps = { id: string };
+export type GameProps = { id: string; rep?: any };
 
-function Game({ id }: GameProps): JSX.Element {
+function Game({ id, rep }: GameProps): JSX.Element {
   const [fen, setFen] = useState("");
   // const [lastMove, setLastMove] = useState([]);
   const [movesHistory, setMovesHistory] = useState([]);
   const [puzzleId, setPuzzleId] = useState("");
   const [scores, setScores] = useState<Scores>({});
   const [fails, setFails] = useState(0);
+  const moves = useSubscribe(
+    rep,
+    (tx) => tx.scan({ prefix: "move/" }).toArray(),
+    []
+  );
+  console.log(moves);
 
   useEffect(() => {
     const playerName = sessionStorage.getItem("name");
@@ -44,6 +51,13 @@ function Game({ id }: GameProps): JSX.Element {
   const onMove = async (from, to) => {
     console.log(123);
     console.log(from, to);
+    rep.mutate.createMove({
+      id: Math.random().toString(32).substr(2),
+      order: moves.length,
+      from,
+      to,
+    });
+
     const playerName = sessionStorage.getItem("name");
     const result = await validateMove(
       id,
